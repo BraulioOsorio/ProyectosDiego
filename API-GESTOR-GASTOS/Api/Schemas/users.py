@@ -35,3 +35,14 @@ class Token(BaseModel):
         orm_mode = True
 
     #Cuando orm_mode esta habilitado, permite la conversion directa de objetos SQLAlchemy a modelos Pydantic sin necesidad de definir explicitamente todos los campos
+        
+class UserUpdate(UserBase):
+    user_id :str
+    passhash : str
+    user_status : bool 
+
+class UserUpdateAdmin(UserBase):
+    user_id :str
+    passhash : str
+    user_status : bool
+    user_role : UserRole
