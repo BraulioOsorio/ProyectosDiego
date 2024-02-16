@@ -5,14 +5,12 @@ from datetime import datetime
 
 Base = declarative_base()
 
-class User(Base):
-    __tablename__ = "users"
+class Category(Base):
+    __tablename__ = "category"
 
-    user_id = Column(String(30), primary_key=True)
-    full_name = Column(String(80), nullable=False)
-    mail = Column(String(100), unique=True, nullable=False)
-    passhash = Column(String(140), nullable=False)
-    user_role = Column(Enum('admin', 'user'), nullable=False)
-    user_status = Column(Boolean, default=True)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    category_id = Column(Integer, autoincrement=True, primary_key=True)
+    category_name = Column(String(50), nullable=False)
+    category_description = Column(String(120), nullable=False)
+    category_status = Column(Boolean, default=True)
+
+ 

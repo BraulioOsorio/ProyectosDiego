@@ -23,10 +23,12 @@
 
 from fastapi import FastAPI,APIRouter
 from Api.Routes import users
+from Api.Routes import categories
 from Core.config import settings
 
 api_router = APIRouter()
 api_router.include_router(users.router,prefix="/users",tags=["users"])
+api_router.include_router(categories.router,prefix="/categories",tags=["categories"])
 
 app = FastAPI(title=settings.PROJECT_NAME,version=settings.PROJECT_VERSION,description=settings.PROJECT_DESCRIPTION)
 app.include_router(api_router)
