@@ -1,9 +1,10 @@
-from sqlalchemy import Column, String, Integer, Enum, TIMESTAMP, DateTime,Boolean
+from sqlalchemy import Column, String, Integer, Enum, TIMESTAMP, DateTime,Boolean,ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import TINYINT
-from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+from Api.Models.transacciones import Transaction
+from Api.Models.base_class import Base
 
-Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
@@ -16,3 +17,22 @@ class User(Base):
     user_status = Column(Boolean, default=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    transactions = relationship("Transaction",back_populates="user")
+    tokens = relationship("Token_Model",back_populates="user")
+
+
+
+
+
+class Token_Model(Base):
+    __tablename__ = "tokens"
+
+    token = Column(String(100), primary_key=True)
+    user_id = Column(String(30),ForeignKey('users.user_id'))
+    token_status = Column(Boolean, default=True)
+    token_created_at = Column(TIMESTAMP, default=datetime.utcnow)
+
+    user = relationship(User,back_populates="tokens")
+
+

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from Core.security import get_hashed_password,verify_password
 from Core.utils import generate_user_id
 
+
 def create_new_user(user:UserCreate,db:Session,rol:str):
     db_user = User(
         user_id = generate_user_id(),

@@ -5,6 +5,8 @@ from db.session import get_session
 from Api.Schemas.users import UserCreate,UserRead,Token,UserCreateAdmin,UserUpdateAdmin,UserUpdate
 from Api.Crud.users import *
 from Core.security import create_access_token,verify_token
+from Api.Crud.tokens import *
+from Api.Schemas.tokens import *
 
 router = APIRouter()
 
@@ -25,7 +27,7 @@ async def get_current_user(token:str = Depends(oauth2_sheme),db : Session = Depe
 async def create_user(user:UserCreate,db:Session = Depends(get_session)):
     verify_user = get_user_by_email(user.mail,db)
     if verify_user is None:
-        return create_new_user(user,db,'admin')
+        return create_new_user(user,db,'user')
     
     raise HTTPException(status_code=404,detail="Email already exists")
 
@@ -44,14 +46,17 @@ async def create_user(user:UserCreateAdmin,db:Session = Depends(get_session),cur
 
 @router.get("/get/{user_id}",response_model=UserRead)
 def read_user(user_id:str, db:Session = Depends(get_session),current_user : UserRead = Depends(get_current_user)):
-    if current_user.user_role == "admin" or current_user.user_id == user_id  and current_user.user_status:
-        user = get_user_by_id(user_id,db)
-        if user is None:
-            raise HTTPException(status_code=404,detail="User not fount")
-        
-        return user
-    else:
-        raise HTTPException(status_code=404,detail="No funca")
+    if current_user.user_status:
+
+        if current_user.user_role == "admin" or current_user.user_id == user_id:
+            user = get_user_by_id(user_id,db)
+            if user is None:
+                raise HTTPException(status_code=404,detail="User not fount")
+            
+            return user
+        else:
+            raise HTTPException(status_code=404,detail="No funca")
+    raise HTTPException(status_code=401,detail="the user is invalid")
     
 @router.post("/update-user-admin/",response_model=UserRead)
 async def update_user_admin(user:UserUpdateAdmin,db:Session = Depends(get_session),current_user : UserRead = Depends(get_current_user)):
@@ -92,8 +97,19 @@ async def login_for_acces_token(form_data: OAuth2PasswordRequestForm = Depends()
             )
     if user.user_status:
         access_token = create_access_token(data={"sub":user.user_id})
+        token = TokenCreate(
+            token=access_token,
+            user_id = user.user_id
+        )
+
+        TOKEN = await create_new_token(token,db)
         return{"access_token":access_token,"token_type":"bearer"}
     raise HTTPException(status_code=401,detail="usuario Inactivo")
+
+
+@router.post("/logout",response_model=TokenRead)
+async def destroy_token(token_data:TokenUpdate,db:Session = Depends(get_session)):
+    return await update_token_status(token_data,db)
 
 
 

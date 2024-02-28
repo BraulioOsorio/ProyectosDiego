@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter,Depends,HTTPException
 from fastapi.security import OAuth2PasswordRequestForm,OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -31,3 +32,14 @@ async def read_category(cate_id:int,db:Session =Depends(get_session),current_use
         cate = cate_by_id(cate_id,db)
         return cate 
     raise HTTPException(status_code=404,detail="no tiene permisos")
+
+
+@router.get("/get-all-categorys/",response_model = List[CateRead])
+async def get_all_categories_func(db: Session = Depends(get_session), current_user: UserRead = Depends(get_current_user)):
+    if current_user.user_status:
+        category = get_all_categories(db)
+        if category:
+            return category
+        raise HTTPException(status_code=404, detail="Category not found, try with another")
+    else:
+        raise HTTPException(status_code=403, detail="El estado del usuario es inactivo /get")

@@ -1,6 +1,7 @@
 import sys
 from fastapi.responses import JSONResponse
 from Api.Models.Categories import Category
+
 from fastapi import HTTPException
 from Api.Schemas.categories import *
 from sqlalchemy.orm import Session
@@ -48,5 +49,9 @@ def cate_by_id(cate_id : int, db : Session):
     if not cate:
         raise HTTPException(status_code=401,detail="La categoria no existe")
     return cate
+
+def get_all_categories(db: Session):
+    category = db.query(Category).filter(Category.category_status == 1).all()
+    return category
         
     

@@ -39,5 +39,3 @@ CREATE TABLE tokens(
     token_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
-INSERT INTO `users` (`user_id`, `full_name`, `mail`, `passhash`, `user_role`, `user_status`, `created_at`, `updated_at`) VALUES ('', 'Winder Alexander Roman Semprun', 'winderroman3131@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 'admin', '1', current_timestamp(), current_timestamp());
