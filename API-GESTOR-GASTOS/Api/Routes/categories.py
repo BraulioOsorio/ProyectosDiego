@@ -7,7 +7,6 @@ from Api.Schemas.categories import *
 from Api.Crud.categories import * 
 from Api.Schemas.users import UserRead
 from Api.Routes.users import get_current_user
-from Api.Crud.users import *
 
 router = APIRouter()
 

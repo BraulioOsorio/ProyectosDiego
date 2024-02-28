@@ -27,7 +27,7 @@ CREATE TABLE transactions(
     amount FLOAT(10,2) NOT NULL,
     t_description VARCHAR(120),
     t_type ENUM('revenue','expenses'),
-    t_date DATE,
+    t_date DATE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );

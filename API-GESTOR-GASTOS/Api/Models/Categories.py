@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, Enum, TIMESTAMP, DateTime,Boolea
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import TINYINT
 from Api.Models.base_class import Base
-from Api.Models.transacciones import Transaction
+
 
 
 

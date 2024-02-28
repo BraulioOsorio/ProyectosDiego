@@ -13,14 +13,24 @@ router = APIRouter()
 oauth2_sheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 
-async def get_current_user(token:str = Depends(oauth2_sheme),db : Session = Depends(get_session)):
+async def get_current_user(token:str = Depends(oauth2_sheme), db:Session = Depends(get_session)):
     user_id = await verify_token(token)
     if user_id is None:
-        raise HTTPException(status_code=401,detail="invalid token")
-    user_db = get_user_by_id(user_id,db)
-    if user_db is None:
-        raise HTTPException(status_code=404,detail="User not fount")
-    return user_db
+        token_update = TokenUpdate(
+            token=token,
+            token_status=False
+        )
+        await update_token_status(token_update,db)
+        raise HTTPException(status_code=401,detail="Invalid token")
+
+    token_db = await get_token_by_token(token,db)
+    if token_db.token_status:
+        user_db = get_user_by_id(user_id,db)
+        if user_db is None:
+            raise HTTPException(status_code=404,detail="User not found")
+        return user_db
+    else:
+        raise HTTPException(status_code=401,detail="Invalid token")
 
 
 @router.post("/create-user/",response_model=UserRead)

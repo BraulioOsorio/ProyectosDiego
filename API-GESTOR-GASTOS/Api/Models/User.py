@@ -4,6 +4,7 @@ from sqlalchemy.dialects.mysql import TINYINT
 from datetime import datetime
 from Api.Models.transacciones import Transaction
 from Api.Models.base_class import Base
+from Api.Models.tokens import Token_Model
 
 
 class User(Base):
@@ -20,19 +21,5 @@ class User(Base):
 
     transactions = relationship("Transaction",back_populates="user")
     tokens = relationship("Token_Model",back_populates="user")
-
-
-
-
-
-class Token_Model(Base):
-    __tablename__ = "tokens"
-
-    token = Column(String(100), primary_key=True)
-    user_id = Column(String(30),ForeignKey('users.user_id'))
-    token_status = Column(Boolean, default=True)
-    token_created_at = Column(TIMESTAMP, default=datetime.utcnow)
-
-    user = relationship(User,back_populates="tokens")
 
 
